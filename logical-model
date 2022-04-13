@@ -1,0 +1,143 @@
+
+CREATE TABLE notown.instrument (
+                name VARCHAR NOT NULL,
+                pitch VARCHAR NOT NULL,
+                CONSTRAINT instrument_pk PRIMARY KEY (name)
+);
+
+
+CREATE TABLE notown.address (
+                id_address INTEGER NOT NULL,
+                number INTEGER NOT NULL,
+                street1 VARCHAR NOT NULL,
+                street2 VARCHAR NOT NULL,
+                city VARCHAR NOT NULL,
+                state VARCHAR NOT NULL,
+                zipcode INTEGER NOT NULL,
+                telephone INTEGER NOT NULL,
+                CONSTRAINT addressid PRIMARY KEY (id_address)
+);
+
+
+CREATE INDEX addressid
+ ON notown.address
+ ( id_address );
+
+CREATE TABLE notown.musician (
+                SSN INTEGER NOT NULL,
+                id_address INTEGER NOT NULL,
+                Name VARCHAR NOT NULL,
+                CONSTRAINT musician_pk PRIMARY KEY (SSN)
+);
+
+
+CREATE TABLE notown.musician_instrument (
+                SSN INTEGER NOT NULL,
+                name VARCHAR NOT NULL,
+                CONSTRAINT musician_instrument_pk PRIMARY KEY (SSN, name)
+);
+
+
+CREATE TABLE notown.album (
+                albumID INTEGER NOT NULL,
+                SSN INTEGER NOT NULL,
+                title VARCHAR NOT NULL,
+                release_date INTEGER NOT NULL,
+                age INTEGER NOT NULL,
+                format VARCHAR NOT NULL,
+                CONSTRAINT album_pk PRIMARY KEY (albumID)
+);
+
+
+CREATE TABLE notown.song (
+                title VARCHAR NOT NULL,
+                SSN INTEGER NOT NULL,
+                albumID INTEGER NOT NULL,
+                length VARCHAR NOT NULL,
+                CONSTRAINT song_pk PRIMARY KEY (title)
+);
+
+
+CREATE TABLE notown.musician_perform_song (
+                SSN INTEGER NOT NULL,
+                title VARCHAR NOT NULL,
+                CONSTRAINT musician_perform_song_pk PRIMARY KEY (SSN, title)
+);
+
+
+CREATE TABLE notown.instrument_song (
+                name VARCHAR NOT NULL,
+                title VARCHAR NOT NULL,
+                CONSTRAINT instrument_song_pk PRIMARY KEY (name, title)
+);
+
+
+ALTER TABLE notown.musician_instrument ADD CONSTRAINT instrument_musician_instrument_fk
+FOREIGN KEY (name)
+REFERENCES notown.instrument (name)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE notown.instrument_song ADD CONSTRAINT instrument_instrument_song_fk
+FOREIGN KEY (name)
+REFERENCES notown.instrument (name)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE notown.musician ADD CONSTRAINT address_musician_fk
+FOREIGN KEY (id_address)
+REFERENCES notown.address (id_address)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE notown.album ADD CONSTRAINT musician_album_fk
+FOREIGN KEY (SSN)
+REFERENCES notown.musician (SSN)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE notown.song ADD CONSTRAINT musician_song_fk
+FOREIGN KEY (SSN)
+REFERENCES notown.musician (SSN)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE notown.musician_instrument ADD CONSTRAINT musician_musician_instrument_fk
+FOREIGN KEY (SSN)
+REFERENCES notown.musician (SSN)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE notown.musician_perform_song ADD CONSTRAINT musician_musician_perform_song_fk
+FOREIGN KEY (SSN)
+REFERENCES notown.musician (SSN)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE notown.song ADD CONSTRAINT album_song_fk
+FOREIGN KEY (albumID)
+REFERENCES notown.album (albumID)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE notown.instrument_song ADD CONSTRAINT song_instrument_song_fk
+FOREIGN KEY (title)
+REFERENCES notown.song (title)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE notown.musician_perform_song ADD CONSTRAINT song_musician_perform_song_fk
+FOREIGN KEY (title)
+REFERENCES notown.song (title)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
